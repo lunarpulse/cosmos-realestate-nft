@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const infuraKey = fs.readFileSync(".rinkeby-infurakey").toString().trim();
 const mnemonic = fs.readFileSync(".secret").toString().trim();
+const rinkebyMnemonic = fs.readFileSync(".rinkeby-secret").toString().trim();
 module.exports = {
   networks: {
     development: {
@@ -12,10 +13,10 @@ module.exports = {
       },
       network_id: '*',
       gasPrice: 10000000, 
-      gasLimit: 3141592000000   
+      gasLimit: 3141592000000    
     },
     rinkeby: {
-      provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
+      provider: () => new HDWalletProvider(rinkebyMnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
       network_id: 4,       // rinkeby's id
       gas: 5500000,        // rinkeby has a lower block limit than mainnet
       confirmations: 2,

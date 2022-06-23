@@ -31,6 +31,10 @@ contract Ownable {
         _owner = newOwner;
         emit ownershipModified(lastOwner, _owner);
     }
+
+    function getOwner() public view returns (address) {
+        return _owner;
+    }
 }
 
 contract Pausable is Ownable {
@@ -44,12 +48,12 @@ contract Pausable is Ownable {
     event Unpaused(address unpausedAccount);
 
     modifier whenNotPaused() {
-        require(_paused == false, "Contract not paused");
+        require(_paused == false, "Contract paused");
         _;
     }
 
     modifier whenPaused() {
-        require(_paused == true, "Contract paused");
+        require(_paused == true, "Contract Not paused");
         _;
     }
 
@@ -64,7 +68,7 @@ contract Pausable is Ownable {
 
     function Unpause() public onlyOwner whenPaused {
         _paused = true;
-        emit Paused(msg.sender);
+        emit Unpaused(msg.sender);
     }
 }
 
@@ -576,33 +580,33 @@ contract ERC721Metadata is ERC721Enumerable, usingProvable {
         return _tokenURIs[tokenId];
     }
 
-    function _setTokenURI(uint256 tokenId) internal onlyExistingToken(tokenId) {
-        _tokenURIs[tokenId] = strConcat(_baseTokenURI, uint2str(tokenId));
-    }
-}
-
-/// @title CRNFT
-/// @author Gordon
-/// @notice Mints CRNFT
-/// @dev using ERC721 Meta data
-contract CRNFT is ERC721Metadata {
-    constructor()
-        public
-        ERC721Metadata(
-            "Cosmos' Realestate NFT",
-            "cRNFT",
-            "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/"
-        )
-    {}
-
-    function mint(address to, uint256 tokenId)
-        public
-        onlyOwner
-        whenNotPaused
-        returns (bool)
+    function uint2stre(uint256 _i)
+        internal
+        pure
+        returns (string memory _uintAsString)
     {
-        _mint(to, tokenId);
-        _setTokenURI(tokenId);
-        return true;
+        if (_i == 0) {
+            return "0";
+        }
+        uint256 j = _i;
+        uint256 len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint256 k = len;
+        while (_i != 0) {
+            k = k - 1;
+            uint8 temp = (48 + uint8(_i - (_i / 10) * 10));
+            bytes1 b1 = bytes1(temp);
+            bstr[k] = b1;
+            _i /= 10;
+        }
+        return string(bstr);
+    }
+
+    function _setTokenURI(uint256 tokenId) internal onlyExistingToken(tokenId) {
+        _tokenURIs[tokenId] = strConcat(_baseTokenURI, uint2stre(tokenId));
     }
 }
