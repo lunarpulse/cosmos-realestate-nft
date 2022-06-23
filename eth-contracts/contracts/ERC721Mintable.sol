@@ -581,19 +581,10 @@ contract ERC721Metadata is ERC721Enumerable, usingProvable {
     }
 }
 
-//  TODO's: Create CustomERC721Token contract that inherits from the ERC721Metadata contract. You can name this contract as you please
-//  1) Pass in appropriate values for the inherited ERC721Metadata contract
-//      - make the base token uri: https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/
-//  2) create a public mint() that does the following:
-//      -can only be executed by the contract owner
-//      -takes in a 'to' address, tokenId, and tokenURI as parameters
-//      -returns a true boolean upon completion of the function
-//      -calls the superclass mint and setTokenURI functions
-
-/// @title A title that should describe the contract/interface
-/// @author The name of the author
-/// @notice Explain to an end user what this does
-/// @dev Explain to a developer any extra details
+/// @title CRNFT
+/// @author Gordon
+/// @notice Mints CRNFT
+/// @dev using ERC721 Meta data
 contract CRNFT is ERC721Metadata {
     constructor()
         public
@@ -612,5 +603,6 @@ contract CRNFT is ERC721Metadata {
     {
         _mint(to, tokenId);
         _setTokenURI(tokenId);
+        return true;
     }
 }

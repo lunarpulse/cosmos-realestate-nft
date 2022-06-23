@@ -1,60 +1,56 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-// TODO define a contract call to the zokrates generated solidity contract <Verifier> or <renamedVerifier>
+import "./verifier.sol";
+import "./ERC721Mintable.sol";
 
+contract SolnSquareVerifier is CRNFT {
+    struct Solution {
+        uint256 index;
+        address solver;
+        bytes32 key;
+    }
 
+    Solution[] private _solutions;
+    mapping(bytes32 => bool) private _uniqueSolutions;
+    event SolutionAdded(uint256 index, address solver, bytes32 key);
 
-// TODO define another contract named SolnSquareVerifier that inherits from your ERC721Mintable class
+    Verifier private _verifier;
 
+    constructor(address verifier) public {
+        _verifier = Verifier(verifier);
+    }
 
+    function isUniqueSolution(bytes32 key) internal view returns (bool) {
+        return _uniqueSolutions[key];
+    }
 
-// TODO define a solutions struct that can hold an index & an address
+    function _addSolution(uint256 index, bytes32 key) internal {
+        _solutions.push(Solution({index: index, solver: msg.sender, key: key}));
+        _uniqueSolutions[key] = true;
+        emit SolutionAdded(index, msg.sender, key);
+    }
 
-
-// TODO define an array of the above struct
-
-
-// TODO define a mapping to store unique solutions submitted
-
-
-
-// TODO Create an event to emit when a solution is added
-
-
-
-// TODO Create a function to add the solutions to the array and emit the event
-
-
-
-// TODO Create a function to mint new NFT only after the solution has been verified
-//  - make sure the solution is unique (has not been used before)
-//  - make sure you handle metadata as well as tokenSuplly
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    function mintNewCRNFT(
+        uint256 tokenId,
+        uint256[2] memory a,
+        uint256[2][2] memory b,
+        uint256[2] memory c,
+        uint256[2] memory input
+    ) public {
+        require(
+            _verifier.verifyTx(
+                Verifier.Proof({
+                    a: Pairing.G1Point(a[0], a[1]),
+                    b: Pairing.G2Point(b[0], b[1]),
+                    c: Pairing.G1Point(c[0], c[1])
+                }),
+                input
+            ),
+            "Invalid Solution params"
+        );
+        bytes32 key = keccak256(abi.encodePacked(a, b, c, input));
+        require(!isUniqueSolution(key), "Already used solution");
+        _addSolution(tokenId, key);
+    }
+}
