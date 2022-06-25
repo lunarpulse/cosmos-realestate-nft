@@ -67,7 +67,7 @@ contract Pausable is Ownable {
     }
 
     function Unpause() public onlyOwner whenPaused {
-        _paused = true;
+        _paused = false;
         emit Unpaused(msg.sender);
     }
 }
