@@ -207,7 +207,7 @@ docker run -v /home/lunarpulse/Projects/Crypto/typescript-node/nd1301/Blockchain
 | -------- | ---------------------- |
 | Migrations  |https://rinkeby.etherscan.io/address/0x5D6d330dea98c00265CaD6C4C0c99443ECab54e6|
 | Verifier  |https://rinkeby.etherscan.io/address/0xF1aBbA7A261ecD4cf65089bb5d1352D2436bd86F|
-| SolnSquareVerifier |https://rinkeby.etherscan.io/address/0xF1aBbA7A261ecD4cf65089bb5d1352D2436bd86F|
+| SolnSquareVerifier |https://rinkeby.etherscan.io/address/0xD5bdD50Ca9F44590be27C291cDEa04Ea06ad2e93|
 
 ### ABI
 - [SolnSquareVerifier](./abi/SolnSquareVerifier.json)
