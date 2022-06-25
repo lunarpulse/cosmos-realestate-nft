@@ -279,7 +279,7 @@ contract ERC721 is Pausable, ERC165 {
     // @dev Internal function to mint a new token
     // TIP: remember the functions to use for Counters. you can refresh yourself with the link above
     function _mint(address to, uint256 tokenId) internal virtual {
-        require(!_exists(tokenId), "Alrerady Token exists");
+        require(!_exists(tokenId), "Already Token exists");
         require(to != address(0), "Invalid Address");
 
         _tokenOwner[tokenId] = to;

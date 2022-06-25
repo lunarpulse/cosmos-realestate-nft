@@ -78,6 +78,28 @@ contract SolnSquareVerifier is CRNFT, Verifier {
         return (a, b, c);
     }
 
+    function mintNFTbasic(
+        address to,
+        uint256 tokenId,
+        uint256[2] memory a,
+        uint256[2][2] memory b,
+        uint256[2] memory c,
+        uint256[2] memory input
+    ) public {
+        bytes32 key = buildKey(to, a, b, c, input);
+
+        require(isUniqueSolution(key), "Already used solution");
+
+        Proof memory proof = Proof({
+            a: Pairing.G1Point(a[0], a[1]),
+            b: Pairing.G2Point(b[0], b[1]),
+            c: Pairing.G1Point(c[0], c[1])
+        });
+        require(super.verifyTx(proof, input), "Invalid Solution params");
+        _addSolution(key);
+        super.mint(to, tokenId);
+    }
+
     function mintNFT(
         address to,
         uint256 tokenId,

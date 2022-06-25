@@ -54,6 +54,26 @@ contract('TestERC721Mintable', accounts => {
             }
         })
 
+        it('should be pausable and unpausable', async function () {
+            try {
+                await this.contract.Pause({ from: ownerAccount });
+            }
+            catch (e) {
+                console.log(e);
+            }
+            let paused = await this.contract.isPaused.call();
+            assert.equal(paused, true, "Contract not paused");
+
+            try {
+                await this.contract.Unpause({ from: ownerAccount });
+            }
+            catch (e) {
+                console.log(e);
+            }
+            paused = await this.contract.isPaused.call();
+            assert.equal(paused, false, "Contract not paused");
+        })
+
         it('should return token uri', async function () {
             let success = true;
             let token1URI, token2URI;
@@ -112,6 +132,20 @@ contract('TestERC721Mintable', accounts => {
                 success = false;
             }
             assert.equal(success, false, "Caller must be contract owner");
+        })
+
+        it('should fail minting when paused', async function () {
+            var success = false;
+
+            try {
+                await this.contract.Pause({ from: ownerAccount });
+                await this.contract.mint(account1, 7, { from: ownerAccount });
+                success = true;
+            } catch (e){
+                console.log(e);
+            }
+
+            assert.equal(success, false, "Contract not paused");
         })
 
         it('should return contract owner', async function () {

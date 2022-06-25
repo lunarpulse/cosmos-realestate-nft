@@ -7,6 +7,7 @@ contract('TestSolnSquareVerifier', accounts => {
 
     beforeEach(async function () {
         this.contract = await SolnSquareVerifier.new({ from: account1 });
+        console.log(`SolnSquareVerifier address: ${this.contract.address}`);
     })
 
     describe('solution square verifier test', function () {
@@ -45,21 +46,72 @@ contract('TestSolnSquareVerifier', accounts => {
         })
     });
 
-    it('ERC721 token can be minted for contract', async function () {
-        let minted = false;
-        try {
-            await this.contract.mintNFT(
-                account2,
-                20,
-                zKProof.proof,
-                zKProof.inputs,
-                { from: account1 }
-            );
-            minted = true;
-        }
-        catch (e) {
-            console.log(e);
-        }
-        assert.equal(minted, true, "Solution wasn't minted");
-    })
+    describe('solution square verifier test', function () {
+
+        it('ERC721 token can be minted for contract with proof object', async function () {
+            let minted = false;
+            let balanceofAccount2 = await this.contract.balanceOf(account2);
+            let totalSupplyBeforeMint = await this.contract.totalSupply.call();
+            console.log(`minted: ${minted}\tbalanceofAccount2 ${balanceofAccount2}\ttotalSupplyBeforeMint ${totalSupplyBeforeMint}`);
+            
+            try {
+                await this.contract.mintNFT(
+                    account2,
+                    20,
+                    zKProof.proof,
+                    zKProof.inputs,
+                    { from: account1 }
+                );
+            }
+            catch (e) {
+                console.log(e);
+            }
+
+            let balanceofAccount2AfterMinting = await this.contract.balanceOf(account2);
+            let totalSupplyAfterMint = await this.contract.totalSupply.call();
+
+            if (balanceofAccount2AfterMinting = balanceofAccount2 + 1) {
+                minted = true;
+            }
+
+            console.log(`minted: ${minted}\tbalanceofAccount2 ${balanceofAccount2AfterMinting}\ttotalSupplyAfterMint ${totalSupplyAfterMint}`);
+
+            assert.equal(totalSupplyBeforeMint.toNumber() + 1, totalSupplyAfterMint.toNumber(),"Total supply the same");
+            assert.equal(minted, true, "Solution wasn't minted");
+        })
+
+        it('ERC721 token can be minted for contract with arrays', async function () {
+            let minted = false;
+            let balanceofAccount2 = await this.contract.balanceOf(account2);
+            let totalSupplyBeforeMint = await this.contract.totalSupply.call();
+            console.log(`minted: ${minted}\tbalanceofAccount2 ${balanceofAccount2}\ttotalSupplyBeforeMint ${totalSupplyBeforeMint}`);
+
+            try {
+                await this.contract.mintNFTbasic(
+                    account2,
+                    21,
+                    zKProof.proof.a,
+                    zKProof.proof.b,
+                    zKProof.proof.c,
+                    zKProof.inputs,
+                    { from: account1 }
+                );
+            }
+            catch (e) {
+                console.log(e);
+            }
+
+            let balanceofAccount2AfterMinting = await this.contract.balanceOf(account2);
+            let totalSupplyAfterMint = await this.contract.totalSupply.call();
+
+            if (balanceofAccount2AfterMinting = balanceofAccount2 + 1) {
+                minted = true;
+            }
+
+            console.log(`minted: ${minted}\tbalanceofAccount2 ${balanceofAccount2AfterMinting}\ttotalSupplyAfterMint ${totalSupplyAfterMint}`);
+
+            assert.equal(totalSupplyBeforeMint.toNumber() + 1, totalSupplyAfterMint.toNumber(),"Total supply the same");
+            assert.equal(minted, true, "Solution wasn't minted");
+        })
+    });
 })
